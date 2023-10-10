@@ -1,0 +1,50 @@
+﻿@using GameStore.Contracts.Games;
+
+@model List<GameDTO>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="text-center">
+    <h1 class="display-4">Welcome Games List</h1>
+</div>
+<div class="container ">
+    <div class="row my-1">
+        @foreach (GameDTO game in Model)
+        {
+            <div class="col-md-4 col-sm-6 my-3">
+                <div class="card">
+                    <img class="card-img-top" src="~/images/games/@game.ImageUrl" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">@game.Name  @game.ImageUrl</h5>
+                        <p class="card-text">@game.Description @game.Id Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a asp-controller="Game" asp-action="View" asp-route-id="@game.Id" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+        <div class="col-md-4 col-sm-6 my-3">
+            <div class="card" >
+              <img class="card-img-top" src="..." alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 my-3">
+            <div class="card" >
+              <img class="card-img-top" src="..." alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+        </div>
+
+    </div>
+</div>
