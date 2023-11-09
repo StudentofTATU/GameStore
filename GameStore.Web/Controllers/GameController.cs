@@ -1,5 +1,6 @@
 ﻿using GameStore.Contracts.Games;
 using GameStore.Services.Interfaces;
+using GameStore.Web.Helper;
 using GameStore.Web.ViewModels.Games;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,18 @@ namespace GameStore.Web.Controllers
             this.webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
+        {
+            List<GameDTO> games = (List<GameDTO>)await gameService.GetAllGamesAsync();
+
+            int pageSize = 6;
+
+            return View(PaginatedList<GameDTO>.Create(games, pageNumber ?? 1, pageSize));
+        }
+
+        //Authorized
+        [HttpGet]
+        public async Task<IActionResult> GamesOfUser()
         {
             List<GameDTO> games = (List<GameDTO>)await gameService.GetAllGamesAsync();
             return View(games);
@@ -36,27 +48,39 @@ namespace GameStore.Web.Controllers
             GameDTO gameDTO = await gameService.GetGameByIdAsync(Id);
             return View(gameDTO);
         }
+
         [HttpGet]
         public async Task<IActionResult> Edit(string Id)
         {
             GameDTO game = await gameService.GetGameByIdAsync(Id);
 
-            return View(game);
+            EditGameViewModel editGameViewModel = new EditGameViewModel();
+            editGameViewModel.SetValues(game);
+            return View(editGameViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(GameDTO game)
+        public async Task<IActionResult> Edit(EditGameViewModel gameViewModel)
         {
+            bool isUpdated = gameService.Update(gameViewModel.GetGameDTO());
 
-            // write code
-            return View(game);
+            if (gameViewModel.Image != null)
+            {
+                ChangeImage(gameViewModel);
+            }
+
+            return RedirectToAction("GamesOfUser");
         }
 
-        public IActionResult Delete(string Id)
+        public async Task<IActionResult> Delete(string Id)
         {
+            GameDTO gameDTO = await gameService.GetGameByIdAsync(Id);
             bool isDeleted = gameService.Delete(Id);
-
-            return RedirectToAction("Index");
+            if (isDeleted)
+            {
+                DeleteImage(gameDTO.ImageUrl);
+            }
+            return RedirectToAction("GamesOfUser");
         }
 
         [HttpPost]
@@ -86,6 +110,30 @@ namespace GameStore.Web.Controllers
             }
 
             return fileName;
+        }
+        private async Task<string> ChangeImage(EditGameViewModel gameViewModel)
+        {
+            var fileName = "";
+            var folders = "images/games/";
+            if (gameViewModel.Image != null)
+            {
+                string path = folders + gameViewModel.ImageUrlName;
+                string pathToStore = Path.Combine(webHostEnvironment.WebRootPath, path);
+
+                await gameViewModel.Image.CopyToAsync(new FileStream(pathToStore, FileMode.Create));
+            }
+
+            return fileName;
+        }
+
+        private void DeleteImage(string imageUrl)
+        {
+            var path = Path.Combine(webHostEnvironment.WebRootPath,
+                "images/games", imageUrl);
+            if (System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+            }
         }
     }
 }

@@ -33,11 +33,10 @@ namespace GameStore.Data.Repository
 
         public bool Update(Game game)
         {
-            Game gameUpdate = context.Games.Find(game);
+            Game gameUpdate = context.Games.FirstOrDefault(i => i.Id.ToString().Equals(game.Id.ToString()));
             gameUpdate.Name = game.Name;
             gameUpdate.Description = game.Description;
             gameUpdate.Price = game.Price;
-            gameUpdate.ImageUrl = game.ImageUrl;
 
             return SaveChanges();
         }

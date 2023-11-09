@@ -1,6 +1,7 @@
 ﻿@using GameStore.Contracts.Games;
+@using GameStore.Web.Helper;
 
-@model List<GameDTO>
+@model PaginatedList<GameDTO>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -13,38 +14,26 @@
         {
             <div class="col-md-4 col-sm-6 my-3">
                 <div class="card">
-                    <img class="card-img-top" src="~/images/games/@game.ImageUrl" alt="Card image cap">
+                    <img class="card-img-top" style="height:250px;" src="~/images/games/@game.ImageUrl" alt="Card image cap">
                     <div class="card-body">
-                        <h5 class="card-title">@game.Name  @game.ImageUrl</h5>
-                        <p class="card-text">@game.Description @game.Id Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a asp-controller="Game" asp-action="View" asp-route-id="@game.Id" class="btn btn-primary">Go somewhere</a>
+                        <h5 class="card-title">Stratege , $ @game.Price</h5>
+                        <p class="card-text">@game.Name</p>
+                        <a asp-controller="Game" asp-action="View" asp-route-id="@game.Id" class="btn btn-primary">Buy</a>
                     </div>
                 </div>
             </div>
         }
+    </div>
 
+    @{
+        var prevDisabled=!Model.HasPreviousPage ? "disabled":"";
+        var nextDisabled=!Model.HasNextPage ? "disabled":"";
+    }
+    <div class="text-center" style="margin-bottom:70px;">
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex-1)"
+           class="btn btn-link @prevDisabled">Previous</a>
 
-        <div class="col-md-4 col-sm-6 my-3">
-            <div class="card" >
-              <img class="card-img-top" src="..." alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 col-sm-6 my-3">
-            <div class="card" >
-              <img class="card-img-top" src="..." alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-        </div>
-
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex+1)"
+           class="btn btn-link @nextDisabled">Next</a>
     </div>
 </div>

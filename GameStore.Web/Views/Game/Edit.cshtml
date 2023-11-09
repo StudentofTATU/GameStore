@@ -1,6 +1,7 @@
-﻿@using GameStore.Contracts.Games
+﻿@using GameStore.Web.ViewModels.Games
 
-@model GameDTO
+
+@model EditGameViewModel
 
 <div class="container py-5">
     <div class="row">
@@ -9,12 +10,13 @@
                 <div class="col-md-6 mx-auto">
                     <div class="card border-secondary">
                         <div class="card-header">
-                            <h3 class="mb-0 my-2">Create New Game</h3>
+                            <h3 class="mb-0 my-2">Edit Game</h3>
                         </div>
                         <div class="card-body">
                             <form method="post" asp-action="Edit" enctype="multipart/form-data">
 
-                                <input asp-for="OwnerId" type="hidden" value="@Model.Id">
+                                <input asp-for="Id" type="hidden" value="@Model.Id">
+                                <input asp-for="ImageUrlName" type="hidden" value="@Model.ImageUrlName">
                                 <div class="form-group mb-3">
                                     <input asp-for="Name" class="form-control form-control-lg" placeholder="Enter name" value="@Model.Name"/>
                                     <span asp-validation-for="Name" class="text-danger"></span>
@@ -25,16 +27,19 @@
                                 </div>
                                 <div class="form-group mb-3">
                                     <div>
-                                        <textarea asp-for="Description" id="tiny" class="form-control form-control-lg" placeholder="Enter Description">
+                                        <textarea asp-for="Description" id="tiny" class="form-control form-control-lg" placeholder="Enter Description" >
 
                                     </textarea>
                                     </div>
                                     <span asp-validation-for="Description" class="text-danger"></span>
                                 </div>
-
+                                <div class="form-group mb-3">
+                                    <input asp-for="Image" class="form-control " id="image_input" />
+                                    <span asp-validation-for="Image" class="text-danger"></span>
+                                </div>
                                 <div class="row">
                                     <div class="col text-end">
-                                        <button class="btn btn-success btn-lg" type="submit">Create</button>
+                                        <button class="btn btn-success btn-lg" type="submit">Save Changes</button>
                                     </div>
                                 </div>
                             </form>

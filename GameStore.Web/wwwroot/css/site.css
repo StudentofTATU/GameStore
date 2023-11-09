@@ -16,3 +16,31 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/*my styles*/
+
+.gameViewContainer{
+    position:relative;
+}
+
+.editView {
+    transition:.5s ease;
+}
+
+.overlay {
+    transition: .5s ease;
+    opacity: 0;
+    top: 50%;
+    bottom: 50%;
+    position: absolute;
+}
+.gameViewContainer:hover .editView {
+    opacity: 0.1;
+}
+/*.gameViewContainer:hover .editView a {
+    pointer-events: none;
+}*/
+
+.gameViewContainer:hover .overlay {
+    opacity: 1;
+}

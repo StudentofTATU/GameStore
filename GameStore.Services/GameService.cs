@@ -53,5 +53,17 @@ namespace GameStore.Services
 
             return new GameDTO(game);
         }
+
+        public bool Update(GameDTO gameDTO)
+        {
+            Game game = new Game
+            {
+                Id = gameDTO.Id,
+                Name = gameDTO.Name,
+                Description = gameDTO.Description,
+                Price = gameDTO.Price
+            };
+            return gameRepository.Update(game);
+        }
     }
 }

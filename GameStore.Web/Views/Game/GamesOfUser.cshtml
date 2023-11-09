@@ -1,0 +1,40 @@
+﻿@using GameStore.Contracts.Games;
+
+@model List<GameDTO>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="text-center">
+    <a asp-controller="Game" asp-action="Create"  class="btn btn-sm btn-outline-info">Add new Game</a>
+
+    <h1 class="display-4">Games of User</h1>
+</div>
+<div class="container ">
+    <div class="row my-1">
+        @foreach (GameDTO game in Model)
+        {
+            <div class="col-md-4 col-sm-6 my-3">
+                <div class="card gameViewContainer">
+                    <div class="editView">
+                        <img class="card-img-top " style="height:250px;" src="~/images/games/@game.ImageUrl" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Stratege , $ @game.Price</h5>
+                            <p class="card-text">@game.Name</p>
+             
+                        </div>
+                    </div>
+
+
+                    <div class="overlay">
+                        <div class="card-body">
+                        <h3>Game</h3>
+                            <a asp-controller="Game" asp-action="View" asp-route-id="@game.Id" class="btn btn-sm btn-outline-info">View</a>
+                            <a asp-controller="Game" asp-action="Edit" asp-route-id="@game.Id" type="button" class="btn btn-sm btn-outline-warning">Edit</a>
+                            <a asp-controller="Game" asp-action="Delete" asp-route-id="@game.Id" type="button" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

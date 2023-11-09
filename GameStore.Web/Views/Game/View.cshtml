@@ -3,29 +3,31 @@
 @model GameDTO
 
 <div class="text-center">
-    <h1 class="display-4">Welcome Games List</h1>
+    <h1 class="display-4">@Model.Name</h1>
 </div>
 
-<div class="col-md-4 col-sm-6 my-3">
+<div style="width:60%; margin:auto;">
     <div class="card">
-        <img class="card-img-top" src="~/images/games/@Model.ImageUrl" alt="Card image cap">
+        <img class="card-img-top" style="height:480px;" src="~/images/games/@Model.ImageUrl" alt="Card image cap">
         <div class="card-body">
-            <h5 class="card-title">@Model.Name  @Model.ImageUrl</h5>
+            <h5 class="card-title">Cost: $ @Model.Price </h5>
             <p class="card-text">@Model.Description  Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a asp-controller="Game" asp-action="View" asp-route-id="@Model.Id" class="btn btn-primary">Go somewhere</a>
+            <a asp-controller="Game" asp-action="View" asp-route-id="@Model.Id" class="btn btn-primary">Add Cart</a>
         </div>
     </div>
 </div>
-<a type="button"
-   class="btn btn-sm btn-outline-danger"
-   asp-action="Delete"
-   asp-route-id="@Model.Id">
-    Delete
-</a>
+@*<div style="margin:75px;">
+    <a type="button"
+       class="btn btn-sm btn-outline-danger"
+       asp-action="Delete"
+       asp-route-id="@Model.Id">
+        Delete
+    </a>
 
-<a type="button"
-   class="btn btn-sm btn-outline-danger"
-   asp-action="Edit"
-   asp-route-id="@Model.Id">
-    Edit
-</a>
+    <a type="button"
+       class="btn btn-sm btn-outline-danger"
+       asp-action="Edit"
+       asp-route-id="@Model.Id">
+        Edit
+    </a>
+</div>*@
