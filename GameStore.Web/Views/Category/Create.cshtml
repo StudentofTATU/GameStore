@@ -1,0 +1,35 @@
+﻿@using GameStore.Contracts.Categories
+
+@model CategoryDTO
+@{
+    ViewData["Title"] = "Category Page";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                    <div class="card border-secondary">
+                        <div class="card-header">
+                            <h3 class="mb-0 my-2">Create New Category</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" asp-action="Create" enctype="multipart/form-data">
+                                <div class="form-group mb-3">
+                                    <input asp-for="Name" class="form-control form-control-lg" placeholder="Enter name" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-end">
+                                        <button class="btn btn-success btn-lg" type="submit">Create</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
