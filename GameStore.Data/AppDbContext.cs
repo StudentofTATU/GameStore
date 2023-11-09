@@ -1,4 +1,5 @@
-﻿using GameStore.Domain.Entities.Games;
+﻿using GameStore.Domain.Entities.Categories;
+using GameStore.Domain.Entities.Games;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.Data
@@ -9,5 +10,6 @@ namespace GameStore.Data
         { }
 
         public DbSet<Game> Games { get; set; }
+        public DbSet<Category> Categories { get; set; }
     }
 }
