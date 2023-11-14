@@ -8,6 +8,6 @@ namespace GameStore.Services.Interfaces
         Task<IEnumerable<GameDTO>> GetAllGamesAsync();
         Task<GameDTO> GetGameByIdAsync(string gameId);
         bool Delete(string gameId);
-        bool Update(GameDTO game);
+        Task<bool> Update(GameDTO game);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GameStore.Contracts.Categories;
 using GameStore.Contracts.Games;
 
 namespace GameStore.Web.ViewModels.Games
@@ -18,12 +19,13 @@ namespace GameStore.Web.ViewModels.Games
 
         public IFormFile Image { get; set; }
 
+        public List<CategoryDTO>? categoryDTOs { get; set; }
 
         public CreateGameDTO GetGameDTO(string ImageUrl)
         {
             return new CreateGameDTO
             {
-                Name = Name, //TODO change title to name
+                Name = Name,
                 Description = Description,
                 Price = Price,
                 ImageUrl = ImageUrl,

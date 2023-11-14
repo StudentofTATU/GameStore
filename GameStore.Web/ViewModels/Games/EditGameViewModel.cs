@@ -1,4 +1,5 @@
-﻿using GameStore.Contracts.Games;
+﻿using GameStore.Contracts.Categories;
+using GameStore.Contracts.Games;
 
 namespace GameStore.Web.ViewModels.Games
 {
@@ -31,6 +32,18 @@ namespace GameStore.Web.ViewModels.Games
                 Name = this.Name,
                 Description = this.Description,
                 Price = this.Price
+            };
+        }
+
+        public GameDTO GetGameDTO(List<CategoryDTO> categories)
+        {
+            return new GameDTO
+            {
+                Id = this.Id,
+                Name = this.Name,
+                Description = this.Description,
+                Price = this.Price,
+                Categories = categories
             };
         }
     }

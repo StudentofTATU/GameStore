@@ -1,4 +1,6 @@
-﻿namespace GameStore.Domain.Entities.Games
+﻿using GameStore.Domain.Entities.Categories;
+
+namespace GameStore.Domain.Entities.Games
 {
     public class Game
     {
@@ -9,5 +11,8 @@
         public string? ImageUrl { get; set; }
         public DateTimeOffset CreatedDateTime { get; set; }
         public Guid OwnerId { get; set; }
+
+        public List<GameCategory>? GameCategories { get; set; } = new();
+
     }
 }
