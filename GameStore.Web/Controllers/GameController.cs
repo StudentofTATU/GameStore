@@ -1,4 +1,5 @@
-﻿using GameStore.Contracts.Games;
+﻿using GameStore.Contracts.Categories;
+using GameStore.Contracts.Games;
 using GameStore.Services.Interfaces;
 using GameStore.Web.Helper;
 using GameStore.Web.ViewModels.Games;
@@ -9,12 +10,16 @@ namespace GameStore.Web.Controllers
     public class GameController : Controller
     {
         private readonly IGameService gameService;
+        private readonly ICategoryService categoryService;
         private readonly IWebHostEnvironment webHostEnvironment;
 
-        public GameController(IGameService gameService, IWebHostEnvironment webHostEnvironment)
+        public GameController(IGameService gameService,
+            IWebHostEnvironment webHostEnvironment,
+            ICategoryService categoryService)
         {
             this.gameService = gameService;
             this.webHostEnvironment = webHostEnvironment;
+            this.categoryService = categoryService;
         }
 
         public async Task<IActionResult> Index(int? pageNumber)
@@ -54,19 +59,57 @@ namespace GameStore.Web.Controllers
         {
             GameDTO game = await gameService.GetGameByIdAsync(Id);
 
+            List<CategoryWithStateDTO> categoryWithStateDTOs =
+                await categoryService.GetAllCategoriesWithStateAsync(game.Categories);
+
+            List<Category> categories = new List<Category>();
+
+            foreach (var c in categoryWithStateDTOs)
+            {
+                categories.Add(new Category
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    IsChecked = c.IsChecked
+                });
+            }
+
             EditGameViewModel editGameViewModel = new EditGameViewModel();
             editGameViewModel.SetValues(game);
-            return View(editGameViewModel);
+
+            EditGameCategoryViewModel editGameCategoryViewModel =
+                new EditGameCategoryViewModel
+                {
+                    EditGameViewModel = editGameViewModel,
+                    Categories = categories
+                };
+
+            return View(editGameCategoryViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(EditGameViewModel gameViewModel)
+        public async Task<IActionResult> Edit(EditGameCategoryViewModel gameCategoryViewModel)
         {
-            bool isUpdated = gameService.Update(gameViewModel.GetGameDTO());
+            List<CategoryDTO> gameCategoryDTOs = new List<CategoryDTO>();
 
-            if (gameViewModel.Image != null)
+            foreach (var c in gameCategoryViewModel.Categories)
             {
-                ChangeImage(gameViewModel);
+                if (c.IsChecked)
+                {
+                    gameCategoryDTOs.Add(new CategoryDTO
+                    {
+                        Id = c.Id,
+                        Name = c.Name
+                    });
+                }
+            }
+
+            bool isUpdated = await gameService.Update(
+                gameCategoryViewModel.EditGameViewModel.GetGameDTO(gameCategoryDTOs));
+
+            if (gameCategoryViewModel.EditGameViewModel.Image != null)
+            {
+                ChangeImage(gameCategoryViewModel.EditGameViewModel);
             }
 
             return RedirectToAction("GamesOfUser");
@@ -111,6 +154,7 @@ namespace GameStore.Web.Controllers
 
             return fileName;
         }
+
         private async Task<string> ChangeImage(EditGameViewModel gameViewModel)
         {
             var fileName = "";

@@ -1,4 +1,5 @@
-﻿using GameStore.Domain.Entities.Games;
+﻿using GameStore.Contracts.Categories;
+using GameStore.Domain.Entities.Games;
 
 namespace GameStore.Contracts.Games
 {
@@ -11,6 +12,7 @@ namespace GameStore.Contracts.Games
         public string ImageUrl { get; set; }
         public DateTimeOffset CreatedDateTime { get; set; }
         public Guid OwnerId { get; set; }
+        public List<CategoryDTO> Categories { get; set; }
 
         public GameDTO()
         { }

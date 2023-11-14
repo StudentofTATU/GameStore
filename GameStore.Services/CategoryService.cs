@@ -38,6 +38,25 @@ namespace GameStore.Services
             return SaveChanges();
         }
 
+        public async Task<List<CategoryDTO>> GetGameCategoriesAsync(string gameId)
+        {
+            var gameCategories = context.Games.Include(g => g.GameCategories)
+                .ThenInclude(g => g.Category).Single(g => g.Id.ToString().Equals(gameId));
+
+            List<CategoryDTO> gameCategoryDTOs = new List<CategoryDTO>();
+
+            foreach (var category in gameCategories.GameCategories)
+            {
+                gameCategoryDTOs.Add(new CategoryDTO
+                {
+                    Id = category.Category.Id,
+                    Name = category.Category.Name
+                });
+            }
+
+            return gameCategoryDTOs;
+        }
+
         public async Task<IEnumerable<CategoryDTO>> GetAllCategoriesAsync()
         {
             IEnumerable<Category> categories = await context.Categories.ToListAsync();
@@ -78,6 +97,37 @@ namespace GameStore.Services
             var saved = context.SaveChanges();
 
             return saved > 0;
+        }
+
+        public async Task<List<CategoryWithStateDTO>>
+            GetAllCategoriesWithStateAsync(List<CategoryDTO> checkedCategories)
+        {
+            IEnumerable<CategoryDTO> categoryDtos = await GetAllCategoriesAsync();
+            List<CategoryWithStateDTO> categoryWithStateDTOs = new List<CategoryWithStateDTO>();
+
+            foreach (CategoryDTO categoryDTO in categoryDtos)
+            {
+                categoryWithStateDTOs.Add(new CategoryWithStateDTO
+                {
+                    Id = categoryDTO.Id,
+                    Name = categoryDTO.Name,
+                    IsChecked = IsItemExist(categoryDTO.Id, checkedCategories)
+                });
+            }
+
+            return categoryWithStateDTOs;
+        }
+
+        public bool IsItemExist(Guid Id, List<CategoryDTO> checkedCategories)
+        {
+            if (checkedCategories == null) return false;
+
+            foreach (var item in checkedCategories)
+            {
+                if (item.Id.ToString().Equals(Id.ToString())) return true;
+            }
+
+            return false;
         }
     }
 }

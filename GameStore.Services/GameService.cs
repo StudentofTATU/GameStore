@@ -1,4 +1,5 @@
-﻿using GameStore.Contracts.Games;
+﻿using GameStore.Contracts.Categories;
+using GameStore.Contracts.Games;
 using GameStore.Data.Interfaces;
 using GameStore.Domain.Entities.Games;
 using GameStore.Services.Interfaces;
@@ -8,10 +9,12 @@ namespace GameStore.Services
     public class GameService : IGameService
     {
         private readonly IGameRepository gameRepository;
+        private readonly ICategoryService categoryService;
 
-        public GameService(IGameRepository gameRepository)
+        public GameService(IGameRepository gameRepository, ICategoryService categoryService)
         {
             this.gameRepository = gameRepository;
+            this.categoryService = categoryService;
         }
 
         public bool CreateGame(CreateGameDTO createGameDTO)
@@ -51,10 +54,14 @@ namespace GameStore.Services
         {
             Game game = await gameRepository.GetGameByIdAsync(gameId);
 
-            return new GameDTO(game);
+
+            GameDTO gameDTO = new GameDTO(game);
+            gameDTO.Categories = await GetOneGameCategoriesList(gameId);
+
+            return gameDTO;
         }
 
-        public bool Update(GameDTO gameDTO)
+        public async Task<bool> Update(GameDTO gameDTO)
         {
             Game game = new Game
             {
@@ -63,7 +70,50 @@ namespace GameStore.Services
                 Description = gameDTO.Description,
                 Price = gameDTO.Price
             };
-            return gameRepository.Update(game);
+
+            List<CategoryDTO> beforeUpdateGameCategories =
+                await GetOneGameCategoriesList(gameDTO.Id.ToString());
+
+            // gameDTO.Categories this new afrer update list
+            List<Guid> removedCategories, addedCategories;
+
+            removedCategories = GetOmittedItemIds(beforeUpdateGameCategories, gameDTO.Categories);
+            addedCategories = GetOmittedItemIds(gameDTO.Categories, beforeUpdateGameCategories);
+
+
+            return gameRepository.Update(game, removedCategories, addedCategories);
+        }
+
+        private async Task<List<CategoryDTO>> GetOneGameCategoriesList(string gameId)
+        {
+            return await categoryService.GetGameCategoriesAsync(gameId);
+        }
+
+        private List<Guid> GetOmittedItemIds(List<CategoryDTO> mainList, List<CategoryDTO> innerList)
+        {
+            List<Guid> categoryIds = new List<Guid>();
+
+            foreach (var category in mainList)
+            {
+                if (!IsItemExist(category.Id, innerList))
+                {
+                    categoryIds.Add(category.Id);
+                }
+            }
+
+            return categoryIds;
+        }
+
+        public bool IsItemExist(Guid Id, List<CategoryDTO> checkedCategories)
+        {
+            if (checkedCategories == null) return false;
+
+            foreach (var item in checkedCategories)
+            {
+                if (item.Id.ToString().Equals(Id.ToString())) return true;
+            }
+
+            return false;
         }
     }
 }
