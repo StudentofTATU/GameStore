@@ -22,13 +22,30 @@ namespace GameStore.Web.Controllers
             this.categoryService = categoryService;
         }
 
-        public async Task<IActionResult> Index(int? pageNumber)
+        public async Task<IActionResult> Index(int? pageNumber,
+            GamesWithCategoriesViewModel gamesWithCategoriesViewModel)
         {
-            List<GameDTO> games = (List<GameDTO>)await gameService.GetAllGamesAsync();
+            SearchDTO searchDTO = new SearchDTO
+            {
+                SearchText = gamesWithCategoriesViewModel.SearchText,
+                Categories = gamesWithCategoriesViewModel.Categories
+            };
+
+            List<GameDTO> games = gameService.GetSearchedGamesAsync(searchDTO).ToList();
+
+            List<CategoryWithStateDTO> categories =
+                await categoryService.GetAllCategoriesWithStateAsync(null);
 
             int pageSize = 6;
 
-            return View(PaginatedList<GameDTO>.Create(games, pageNumber ?? 1, pageSize));
+            GamesWithCategoriesViewModel gamesWithCategories = new GamesWithCategoriesViewModel
+            {
+                Games = PaginatedList<GameDTO>.Create(games, pageNumber ?? 1, pageSize),
+                Categories = categories,
+                SearchText = gamesWithCategoriesViewModel.SearchText,
+            };
+
+            return View(gamesWithCategories);
         }
 
         //Authorized
@@ -44,6 +61,12 @@ namespace GameStore.Web.Controllers
         {
 
             ViewData["id"] = "c19ec15a-9189-41e3-a9a1-e0c3a30a75d3";// for ownerId 
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Test()
+        {
             return View();
         }
 

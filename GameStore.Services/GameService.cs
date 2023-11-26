@@ -50,6 +50,25 @@ namespace GameStore.Services
             return gameDTOs;
         }
 
+        public IEnumerable<GameDTO> GetSearchedGamesAsync(SearchDTO searchDTO)
+        {
+            List<Guid> categoryIds = new List<Guid>();
+            if (searchDTO.Categories != null)
+            {
+                categoryIds = searchDTO.Categories.Where(c => c.IsChecked)
+                .Select(c => c.Id).ToList();
+            }
+
+
+
+
+            IEnumerable<GameDTO> games = gameRepository
+                .GetAllGamesAsync(searchDTO.SearchText, categoryIds).Select(
+                g => new GameDTO(g));
+
+
+            return games;
+        }
         public async Task<GameDTO> GetGameByIdAsync(string gameId)
         {
             Game game = await gameRepository.GetGameByIdAsync(gameId);

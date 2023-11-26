@@ -1,16 +1,21 @@
-﻿@using GameStore.Contracts.Games;
+﻿@using GameStore.Contracts.Categories
+@using GameStore.Web.ViewModels.Games
+@using GameStore.Contracts.Games;
 @using GameStore.Web.Helper;
 
-@model PaginatedList<GameDTO>
+@model GamesWithCategoriesViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
 <div class="text-center">
     <h1 class="display-4">Welcome Games List</h1>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Search
+    </button>
 </div>
 <div class="container ">
     <div class="row my-1">
-        @foreach (GameDTO game in Model)
+        @foreach (GameDTO game in Model.Games)
         {
             <div class="col-md-4 col-sm-6 my-3">
                 <div class="card">
@@ -26,14 +31,57 @@
     </div>
 
     @{
-        var prevDisabled=!Model.HasPreviousPage ? "disabled":"";
-        var nextDisabled=!Model.HasNextPage ? "disabled":"";
+        var prevDisabled=!Model.Games.HasPreviousPage ? "disabled":"";
+        var nextDisabled=!Model.Games.HasNextPage ? "disabled":"";
     }
     <div class="text-center" style="margin-bottom:70px;">
-        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex-1)"
+        <a asp-action="Index" asp-route-pageNumber="@(Model.Games.PageIndex-1)"
            class="btn btn-link @prevDisabled">Previous</a>
 
-        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex+1)"
+        <a asp-action="Index" asp-route-pageNumber="@(Model.Games.PageIndex+1)"
            class="btn btn-link @nextDisabled">Next</a>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="get" asp-action="Index" enctype="multipart/form-data">
+                    <div class="form-group mb-3">
+                        <input asp-for="@Model.SearchText" class="form-control mr-sm-2"
+                               placeholder="Search" value="@Model.SearchText" />
+
+                        <span asp-validation-for="@Model.SearchText" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <ul class="list-group">
+                            @for (int i = 0; i < Model.Categories.Count; i++)
+                            {
+                                var category = Model.Categories[i];
+                                <li class="list-group-item">
+                                    <input asp-for="Categories[i].Id" type="hidden" value="@category.Id">
+                                    <input asp-for="Categories[i].Name" type="hidden" value="@category.Name">
+                                    @Html.CheckBoxFor(model=> model.Categories[i].IsChecked)
+                                    @category.Name
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
     </div>
 </div>

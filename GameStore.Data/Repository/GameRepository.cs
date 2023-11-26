@@ -96,5 +96,37 @@ namespace GameStore.Data.Repository
 
             context.GameCategories.AddRange(categories);
         }
+
+        public List<Game> GetAllGamesAsync(string searchText, List<Guid> categoryIds)
+        {
+            IQueryable<Game> games;
+
+            if (searchText == null || searchText.Length < 3)
+            {
+                games = context.Games.Include(g => g.GameCategories)
+                    .ThenInclude(g => g.Category);
+            }
+            else
+            {
+                games = context.Games.Include(g => g.GameCategories)
+                    .ThenInclude(g => g.Category).Where(g => g.Name.Contains(searchText));
+            }
+
+
+            if (categoryIds.Count < 1)
+                return games.ToList();
+
+            List<Game> selectedGames = new List<Game>();
+
+            foreach (var game in games)
+            {
+                if (game.GameCategories.Where(c =>
+                    categoryIds.Contains(c.CategoryId)).Count() > 0)
+                {
+                    selectedGames.Add(game);
+                }
+            }
+            return selectedGames;
+        }
     }
 }
