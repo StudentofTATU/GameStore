@@ -41,13 +41,16 @@ namespace GameStore.Services
         public async Task<IEnumerable<GameDTO>> GetAllGamesAsync()
         {
             IEnumerable<Game> games = await gameRepository.GetAllGamesAsync();
-            List<GameDTO> gameDTOs = new List<GameDTO>();
+            //List<GameDTO> gameDTOs = new List<GameDTO>();
 
-            foreach (Game game in games)
-            {
-                gameDTOs.Add(new GameDTO(game));
-            }
-            return gameDTOs;
+            //foreach (Game game in games)
+            //{
+            //    gameDTOs.Add(new GameDTO(game));
+            //}
+            //return gameDTOs;
+
+
+            return games.Select(game => new GameDTO(game));
         }
 
         public IEnumerable<GameDTO> GetSearchedGamesAsync(SearchDTO searchDTO)
@@ -133,6 +136,15 @@ namespace GameStore.Services
             }
 
             return false;
+        }
+
+        public async Task<List<GameDTO>> GetAllUserGamesAsync(string userId)
+        {
+            IEnumerable<Game> games =
+                await gameRepository.GetAllGamesAsync();
+
+            return games.Where(g => g.OwnerId.ToString().Equals(userId))
+                .Select(game => new GameDTO(game)).ToList();
         }
     }
 }

@@ -1,8 +1,11 @@
-﻿namespace GameStore.Domain.Entities.Users
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace GameStore.Domain.Entities.Users
 {
-    internal class User
+    public class User : IdentityUser
     {
-        //extends  from IdentityUser
-        public int MyProperty { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

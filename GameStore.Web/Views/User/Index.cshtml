@@ -1,0 +1,27 @@
+﻿@using GameStore.Web.ViewModels.Users
+
+@model UserViewModel
+@{
+    // Replace "YourController" with your actual controller name and "YourAction" with the action method name
+    var userId = 123; // Replace with the actual user ID
+    var url = Url.Action("GamesOfUser", "Game");
+    var createUrl = Url.Action("Create", "Game", new { userId = Model.Id });
+}
+<h2>User page</h2>
+<div class="card">
+    <div class="card-header">
+        User page
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">FirstName: @Model.FirstName</h5>
+        <h5 class="card-title">LastName: @Model.LastName</h5>
+        <h5 class="card-title">UserName: @Model.UserName</h5>
+        <h5 class="card-title">Email: @Model.Email</h5>
+@*        <a class="btn btn-success" asp-area=""
+           asp-controller="Game" asp-action="GamesOfUser">
+        User Games</a>*@
+        <a class="btn btn-success" href="@url">Games</a>
+        <a class="btn btn-primary" asp-area="" asp-controller="User"
+        asp-action="Edit"> Update </a>
+    </div>
+</div>

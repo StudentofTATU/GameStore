@@ -6,6 +6,7 @@ namespace GameStore.Services.Interfaces
     {
         bool CreateGame(CreateGameDTO createGameDTO);
         Task<IEnumerable<GameDTO>> GetAllGamesAsync();
+        Task<List<GameDTO>> GetAllUserGamesAsync(string userId);
         IEnumerable<GameDTO> GetSearchedGamesAsync(SearchDTO searchDTO);
         Task<GameDTO> GetGameByIdAsync(string gameId);
         bool Delete(string gameId);
