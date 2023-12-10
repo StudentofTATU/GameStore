@@ -8,6 +8,8 @@ namespace GameStore.Web.ViewModels.Users
         [Required]
         public string UserName { get; set; }
 
+        public bool Remember { get; set; } = false;
+
         [Required]
         [RegularExpression("^.{6,}$", ErrorMessage =
             "Minimum length 6.")]
@@ -18,7 +20,8 @@ namespace GameStore.Web.ViewModels.Users
             return new LoginUserDTO
             {
                 UserName = UserName,
-                Password = Password
+                Password = Password,
+                Remember = Remember
             };
         }
     }

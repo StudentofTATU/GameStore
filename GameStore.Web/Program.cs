@@ -1,8 +1,10 @@
 using GameStore.Data;
 using GameStore.Data.Interfaces;
 using GameStore.Data.Repository;
+using GameStore.Domain.Entities.Users;
 using GameStore.Services;
 using GameStore.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.Web
@@ -23,6 +25,24 @@ namespace GameStore.Web
             builder.Services.AddScoped<IGameRepository, GameRepository>();
             builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+            builder.Services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            }).AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.ConfigureApplicationCookie
+                (options => options.LoginPath = "/User/Login");
+
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 

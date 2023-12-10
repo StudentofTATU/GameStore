@@ -13,9 +13,15 @@ namespace GameStore.Data.Repository
             this.context = context;
         }
 
-        public bool Add(User user)
+        public async Task<bool> Update(User user)
         {
-            context.Users.Add(user);
+            User userUpdate = context.Users.
+                FirstOrDefault(i => i.Id.Equals(user.Id));
+
+            userUpdate.FirstName = user.FirstName;
+            userUpdate.LastName = user.LastName;
+            userUpdate.Email = user.Email;
+            userUpdate.UserName = user.UserName;
 
             return SaveChanges();
         }

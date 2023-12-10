@@ -1,8 +1,10 @@
 ﻿using GameStore.Contracts.Categories;
 using GameStore.Contracts.Games;
+using GameStore.Contracts.Users;
 using GameStore.Services.Interfaces;
 using GameStore.Web.Helper;
 using GameStore.Web.ViewModels.Games;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Web.Controllers
@@ -12,14 +14,16 @@ namespace GameStore.Web.Controllers
         private readonly IGameService gameService;
         private readonly ICategoryService categoryService;
         private readonly IWebHostEnvironment webHostEnvironment;
-
+        private readonly IUserService userService;
         public GameController(IGameService gameService,
             IWebHostEnvironment webHostEnvironment,
+            IUserService userService,
             ICategoryService categoryService)
         {
             this.gameService = gameService;
             this.webHostEnvironment = webHostEnvironment;
             this.categoryService = categoryService;
+            this.userService = userService;
         }
 
         public async Task<IActionResult> Index(int? pageNumber,
@@ -48,19 +52,27 @@ namespace GameStore.Web.Controllers
             return View(gamesWithCategories);
         }
 
-        //Authorized
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GamesOfUser()
         {
-            List<GameDTO> games = (List<GameDTO>)await gameService.GetAllGamesAsync();
+            UserDTO userDTO =
+                await userService.GetCurrentUserAsync(HttpContext);
+
+            List<GameDTO> games = await gameService.GetAllUserGamesAsync(userDTO.Id);
+
             return View(games);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        [Authorize]
+        public async Task<IActionResult> Create()
         {
+            UserDTO userDTO =
+                await userService.GetCurrentUserAsync(HttpContext);
 
-            ViewData["id"] = "c19ec15a-9189-41e3-a9a1-e0c3a30a75d3";// for ownerId 
+            //ViewData["id"] = "c19ec15a-9189-41e3-a9a1-e0c3a30a75d3";// for ownerId 
+            ViewData["id"] = userDTO.Id;
             return View();
         }
 
